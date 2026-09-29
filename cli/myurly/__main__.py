@@ -4,8 +4,8 @@ import argparse
 import logging
 import sys
 from pathlib import Path
-from urllib.parse import urlparse
 
+import validators
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 
@@ -21,14 +21,14 @@ from .url_handler import (
 def parse_args() -> argparse.Namespace:
     """Parse and validate the command line arguments."""
 
-    def simple_url_check(url: str) -> str:
-        """A simple check to see if the URL is valid."""
-        try:
-            url_parts = urlparse(url)
-            if url_parts.scheme in ("http", "https") and url_parts.hostname:
-                return url
-        except Exception:
-            pass
+    def url_check(url: str) -> str:
+        """Check that the URL is a valid http(s) URL."""
+        if validators.url(
+            url,
+            validate_scheme=lambda scheme: scheme.lower() in ("http", "https"),
+            strict_query=False,
+        ):
+            return url
         raise argparse.ArgumentTypeError(f"Invalid URL: {url}")
 
     parser = argparse.ArgumentParser(description="myur.ly - A simple URL shortener")
@@ -40,8 +40,8 @@ def parse_args() -> argparse.Namespace:
         "--debug-db", action="store_true", help="enable debug mode for pymongo, only effective if --debug is also set"
     )
     parser_options = parser.add_mutually_exclusive_group(required=True)
-    parser_options.add_argument("--minify", type=simple_url_check, help="URL to minify")
-    parser_options.add_argument("--expand", type=simple_url_check, help="URL to expand")
+    parser_options.add_argument("--minify", type=url_check, help="URL to minify")
+    parser_options.add_argument("--expand", type=url_check, help="URL to expand")
     args = parser.parse_args()
     return args
 

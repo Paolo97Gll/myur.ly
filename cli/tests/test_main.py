@@ -62,11 +62,30 @@ def test_parse_args_accepts_valid_url(monkeypatch: pytest.MonkeyPatch, option: s
 
 
 @pytest.mark.parametrize(
+    "url",
+    [
+        "HTTPS://EXAMPLE.COM/Path",  # the scheme is case insensitive
+        "http://192.168.1.1:8080/path",  # IPv4 host with port
+        "http://[::1]/path",  # IPv6 host
+        "https://example.com/path?flag&a=b;c#fragment",  # non-strict query string and fragment
+        "https://user:pw@example.com/",  # userinfo
+    ],
+)
+def test_parse_args_accepts_real_world_urls(monkeypatch: pytest.MonkeyPatch, url: str) -> None:
+    """URL forms that are valid in the real world are not rejected by the validation."""
+    monkeypatch.setattr("sys.argv", ["myurly", f"--minify={url}"])
+    assert cli.parse_args().minify == url
+
+
+@pytest.mark.parametrize(
     "argv",
     [
         [],  # no command
         ["--minify=not-a-url"],  # malformed URL
         ["--minify=ftp://example.com/file"],  # unsupported scheme
+        ["--expand=https://exa mple.com/"],  # space in the host
+        ["--minify=https://example.com:99999/"],  # invalid port
+        ["--minify=http://localhost/path"],  # host without a valid domain
         [f"--minify={URL}", f"--expand={URL}"],  # mutually exclusive options
     ],
 )
