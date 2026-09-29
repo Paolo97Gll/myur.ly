@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myurly"
+version = "0.1.0"
+description = "A simple URL shortener command line tool"
+requires-python = ">=3.10"
+dependencies = [
+    "pymongo ~= 4.18.1",
+    "jsonschema ~= 4.26.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest ~= 8.4",
+    "mongomock ~= 4.3",
+]
+
+[project.scripts]
+myurly = "myurly.__main__:cli"
+
+[tool.setuptools]
+packages = ["myurly"]
+
+[tool.setuptools.package-data]
+myurly = ["config.schema.json"]
