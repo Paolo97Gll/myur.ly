@@ -6,6 +6,7 @@ from copy import deepcopy
 from pathlib import Path
 
 import jsonschema
+import validators
 
 _SCHEMA_PATH = Path(__file__).parent / "config.schema.json"
 
@@ -109,8 +110,8 @@ class Config:
         Raises
         ------
         ConfigError
-            If the config file is not found, is not valid JSON, or does not conform to
-            the configuration JSON schema.
+            If the config file is not found, is not valid JSON, does not conform to
+            the configuration JSON schema, or contains invalid parameters.
         """
         # load configuration from JSON file
         try:
@@ -136,5 +137,17 @@ class Config:
             raise ConfigError(
                 f"Invalid configuration in {config_path}: {e.message} (at {'.'.join(map(str, e.path))})"
             ) from e
+        # validate extra constraints not expressible in JSON schema
+        host = config["database"]["host"]
+        if not validators.hostname(host, may_have_port=False):
+            raise ConfigError(
+                f"Invalid configuration in {config_path}: {host} is not a valid host, "
+                "the port must be set separately (at database.host)"
+            )
+        domain = config["app"]["short_url_domain"]
+        if not validators.domain(domain):
+            raise ConfigError(
+                f"Invalid configuration in {config_path}: {domain} is not a valid domain (at app.short_url_domain)"
+            )
         self.__logger.debug("Configuration successfully loaded")
         return config
