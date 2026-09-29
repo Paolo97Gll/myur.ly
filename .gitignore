@@ -1,6 +1,9 @@
 # VS Code settings
 .vscode/
 
+# Secrets
+.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
