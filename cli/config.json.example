@@ -1,0 +1,18 @@
+{
+    "database": {
+        "host": "127.0.0.1",
+        "port": 27017,
+        "username": "myurly",
+        "password": "myurly",
+        "database_name": "myurly",
+        "collection_name": "urls"
+    },
+    "app": {
+        "db_timeout_seconds": 3,
+        "short_url_domain": "myur.ly",
+        "short_url_length": 6,
+        "short_url_expiration_seconds": 30,
+        "max_generation_attempts": 3,
+        "renew_expiration_on_new_minify": false
+    }
+}

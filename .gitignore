@@ -2,6 +2,7 @@
 .vscode/
 
 # Secrets
+config.json
 .env
 
 # Byte-compiled / optimized / DLL files

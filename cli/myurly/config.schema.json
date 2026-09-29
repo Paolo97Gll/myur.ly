@@ -1,0 +1,82 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "myur.ly configuration",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "database",
+        "app"
+    ],
+    "properties": {
+        "database": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "host",
+                "port",
+                "database_name",
+                "collection_name",
+                "username",
+                "password"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                },
+                "database_name": {
+                    "type": "string"
+                },
+                "collection_name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "app": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "db_timeout_seconds",
+                "short_url_domain",
+                "short_url_length",
+                "short_url_expiration_seconds",
+                "max_generation_attempts",
+                "renew_expiration_on_new_minify"
+            ],
+            "properties": {
+                "db_timeout_seconds": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "short_url_domain": {
+                    "type": "string"
+                },
+                "short_url_length": {
+                    "type": "integer",
+                    "minimum": 4
+                },
+                "short_url_expiration_seconds": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "max_generation_attempts": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "renew_expiration_on_new_minify": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}
